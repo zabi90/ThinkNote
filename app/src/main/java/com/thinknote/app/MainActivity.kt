@@ -3,42 +3,57 @@ package com.thinknote.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Shapes
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import com.thinknote.app.database.AppDatabase
+import com.thinknote.app.models.Category
+import com.thinknote.app.ui.components.NotesGrid
 import com.thinknote.app.ui.components.SearchView
 import com.thinknote.app.ui.theme.ThinkNoteTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "think-note"
+        ).build()
+        lifecycleScope.launch {
+            db.categoryDao().addCategory(category = Category(id = 0, name = "Health"))
+            db.categoryDao().getCategories().collect{
+                val size = it.size
+            }
+        }
+
+
         //enableEdgeToEdge()
         setContent {
             ThinkNoteTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize(),
+                    floatingActionButton = {
+                        FloatingActionButton(
+                            onClick = {
+                            }) {
+                            Icon(Icons.Filled.Add, contentDescription = "add notes")
+                        }
+                    }) { innerPadding ->
                     App(
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -51,7 +66,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App(modifier: Modifier) {
     Column(modifier = modifier) {
-
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -59,7 +73,16 @@ fun App(modifier: Modifier) {
             painter = painterResource(id = R.drawable.logo), contentDescription = "Think"
         )
 
-        SearchView(modifier = Modifier.fillMaxWidth())
+        SearchView(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp), onSearchValueChange = {
+
+        })
+        NotesGrid(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+        )
     }
 }
 
