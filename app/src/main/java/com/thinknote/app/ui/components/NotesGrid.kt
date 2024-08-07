@@ -17,12 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.thinknote.app.models.CategoryWithNotes
 import com.thinknote.app.ui.theme.ThinkNoteTheme
 
 @Composable
-fun NotesGrid(modifier: Modifier = Modifier) {
+fun NotesGrid(modifier: Modifier = Modifier, categoryWithNotes: List<CategoryWithNotes>) {
 
-    val itemsList = (0..20).toList()
+    // val itemsList = (0..20).toList()
 
     val itemModifier = Modifier
         .fillMaxWidth()
@@ -35,8 +36,8 @@ fun NotesGrid(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(itemsList) {
-            NoteItem(modifier = itemModifier, "Item is $it")
+        items(categoryWithNotes) {
+            NoteItem(modifier = itemModifier, "Item is ${it.category.name}.")
         }
     }
 
@@ -47,8 +48,10 @@ fun NotesGrid(modifier: Modifier = Modifier) {
 @Composable
 fun NotesGridPreview() {
     ThinkNoteTheme {
-        NotesGrid(modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp))
+        NotesGrid(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp), listOf()
+        )
     }
 }

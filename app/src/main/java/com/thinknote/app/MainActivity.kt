@@ -14,35 +14,23 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
-import com.thinknote.app.database.AppDatabase
-import com.thinknote.app.models.Category
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.thinknote.app.models.CategoryWithNotes
 import com.thinknote.app.ui.components.NotesGrid
 import com.thinknote.app.ui.components.SearchView
+import com.thinknote.app.ui.screens.home.HomeViewModel
 import com.thinknote.app.ui.theme.ThinkNoteTheme
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "think-note"
-        ).build()
-        lifecycleScope.launch {
-            db.categoryDao().addCategory(category = Category(id = 0, name = "Health"))
-            db.categoryDao().getCategories().collect{
-                val size = it.size
-            }
-        }
-
-
         //enableEdgeToEdge()
         setContent {
             ThinkNoteTheme {
@@ -55,8 +43,9 @@ class MainActivity : ComponentActivity() {
                         }
                     }) { innerPadding ->
                     App(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                        modifier = Modifier.padding(innerPadding),
+
+                        )
                 }
             }
         }
@@ -65,6 +54,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App(modifier: Modifier) {
+    val homeViewModel: HomeViewModel = viewModel()
+    val categories: State<List<CategoryWithNotes>> = homeViewModel.categories
+
     Column(modifier = modifier) {
         Image(
             modifier = Modifier
@@ -81,7 +73,8 @@ fun App(modifier: Modifier) {
         NotesGrid(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            categoryWithNotes = categories.value
         )
     }
 }
