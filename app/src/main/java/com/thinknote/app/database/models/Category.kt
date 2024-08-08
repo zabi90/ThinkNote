@@ -1,4 +1,4 @@
-package com.thinknote.app.models
+package com.thinknote.app.database.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

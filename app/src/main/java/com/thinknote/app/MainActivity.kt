@@ -20,7 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.thinknote.app.models.CategoryWithNotes
+import com.thinknote.app.database.models.Category
 import com.thinknote.app.ui.components.NotesGrid
 import com.thinknote.app.ui.components.SearchView
 import com.thinknote.app.ui.screens.home.HomeViewModel
@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App(modifier: Modifier) {
     val homeViewModel: HomeViewModel = viewModel()
-    val categories: State<List<CategoryWithNotes>> = homeViewModel.categories
+    val categories: State<List<Category>> = homeViewModel.categories
 
     Column(modifier = modifier) {
         Image(

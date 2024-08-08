@@ -1,4 +1,4 @@
-package com.thinknote.app.utilities
+package com.thinknote.app.database.converters
 
 import androidx.room.TypeConverter
 import java.util.Date
@@ -11,6 +11,6 @@ class Converters {
 
     @TypeConverter
     fun dateToTimestamp(date: Date?): Long? {
-        return date?.time?.toLong()
+        return date?.time
     }
 }

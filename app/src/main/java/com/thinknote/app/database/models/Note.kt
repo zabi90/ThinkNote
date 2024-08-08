@@ -1,11 +1,22 @@
-package com.thinknote.app.models
+package com.thinknote.app.database.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity(tableName = "Notes")
+@Entity(
+    tableName = "Notes", foreignKeys = [
+        ForeignKey(
+            entity = Category::class,
+            parentColumns = ["id"],
+            childColumns = ["categoryId"],
+            onDelete = CASCADE
+        )
+    ]
+)
 data class Note(
     @PrimaryKey
     val id: Int,
