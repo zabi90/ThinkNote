@@ -21,6 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.thinknote.app.database.models.Category
+import com.thinknote.app.ui.components.CategoryItem
+import com.thinknote.app.ui.components.CategoryList
 import com.thinknote.app.ui.components.NotesGrid
 import com.thinknote.app.ui.components.SearchView
 import com.thinknote.app.ui.screens.home.HomeViewModel
@@ -44,7 +46,6 @@ class MainActivity : ComponentActivity() {
                     }) { innerPadding ->
                     App(
                         modifier = Modifier.padding(innerPadding),
-
                         )
                 }
             }
@@ -68,13 +69,18 @@ fun App(modifier: Modifier) {
         SearchView(modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp), onSearchValueChange = {
-
         })
+        CategoryList(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            categories = categories.value
+        )
         NotesGrid(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            categoryWithNotes = categories.value
+                .padding(start = 16.dp, end = 16.dp),
+            categoryWithNotes = homeViewModel.notes.value
         )
     }
 }

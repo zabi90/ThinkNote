@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thinknote.app.database.AppDatabase
 import com.thinknote.app.database.models.Category
+import com.thinknote.app.database.models.Note
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,6 +18,10 @@ class HomeViewModel @Inject constructor(val appDatabase: AppDatabase) : ViewMode
     private var _categories : MutableState<List<Category>> = mutableStateOf(emptyList())
     val categories : State<List<Category>> get() = _categories
 
+    private var _notes : MutableState<List<Note>> = mutableStateOf(emptyList())
+    val notes : State<List<Note>> get() = _notes
+
+
     init {
         getCategories()
     }
@@ -26,6 +31,15 @@ class HomeViewModel @Inject constructor(val appDatabase: AppDatabase) : ViewMode
         viewModelScope.launch {
             appDatabase.categoryDao().getCategories().collect{
                 _categories.value = it
+                getNotes(it[0].id)
+            }
+        }
+    }
+
+    fun getNotes(categoryId : Int){
+        viewModelScope.launch {
+            appDatabase.noteDao().getNoteByCategory(categoryId).collect{
+                _notes.value = it
             }
         }
     }

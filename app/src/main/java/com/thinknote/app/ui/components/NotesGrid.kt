@@ -13,10 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.thinknote.app.database.models.Category
+import com.thinknote.app.database.models.Note
 import com.thinknote.app.ui.theme.ThinkNoteTheme
 
 @Composable
-fun NotesGrid(modifier: Modifier = Modifier, categoryWithNotes: List<Category>) {
+fun NotesGrid(modifier: Modifier = Modifier, categoryWithNotes: List<Note>) {
 
     // val itemsList = (0..20).toList()
 
@@ -32,7 +33,7 @@ fun NotesGrid(modifier: Modifier = Modifier, categoryWithNotes: List<Category>) 
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(categoryWithNotes) {
-            NoteItem(modifier = itemModifier, "Item is ${it.name}.")
+            NoteItem(modifier = itemModifier, it)
         }
     }
 

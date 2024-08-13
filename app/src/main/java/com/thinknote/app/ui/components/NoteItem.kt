@@ -12,14 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.thinknote.app.database.models.Note
 import com.thinknote.app.ui.theme.ThinkNoteTheme
+import java.util.Date
 
 @Composable
-fun NoteItem(modifier: Modifier = Modifier, string: String) {
+fun NoteItem(modifier: Modifier = Modifier, note: Note) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = Color.Red)
+        colors = CardDefaults.cardColors(containerColor = Color(note.color))
     ) {
-        Text(text = string, modifier = modifier)
+        Text( text = note.description, modifier = modifier.padding(8.dp))
     }
 }
 
@@ -32,7 +34,7 @@ fun NoteItemPreview() {
                 .fillMaxWidth()
                 .padding(16.dp)
                 .height(300.dp),
-            "This is test notes description"
+            Note(1, 1, "text descr", 0xFFD9E8FC, Date(), Date())
         )
     }
 }
