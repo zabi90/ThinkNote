@@ -18,8 +18,8 @@ import java.util.Date
     ]
 )
 data class Note(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val categoryId: Int,
     @ColumnInfo(name = "description")
     val description: String,

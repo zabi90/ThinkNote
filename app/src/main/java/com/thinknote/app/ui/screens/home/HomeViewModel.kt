@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(val appDatabase: AppDatabase) : ViewModel() {
+class HomeViewModel @Inject constructor(private val appDatabase: AppDatabase) : ViewModel() {
 
     private var _categories : MutableState<List<Category>> = mutableStateOf(emptyList())
     val categories : State<List<Category>> get() = _categories
@@ -21,10 +21,6 @@ class HomeViewModel @Inject constructor(val appDatabase: AppDatabase) : ViewMode
     private var _notes : MutableState<List<Note>> = mutableStateOf(emptyList())
     val notes : State<List<Note>> get() = _notes
 
-
-    init {
-        getCategories()
-    }
 
 
     fun getCategories(){
@@ -36,7 +32,7 @@ class HomeViewModel @Inject constructor(val appDatabase: AppDatabase) : ViewMode
         }
     }
 
-    fun getNotes(categoryId : Int){
+    private fun getNotes(categoryId : Int){
         viewModelScope.launch {
             appDatabase.noteDao().getNoteByCategory(categoryId).collect{
                 _notes.value = it

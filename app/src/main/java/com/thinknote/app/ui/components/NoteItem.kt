@@ -10,18 +10,28 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.mohamedrejeb.richeditor.model.rememberRichTextState
+import com.mohamedrejeb.richeditor.ui.material3.RichText
 import com.thinknote.app.database.models.Note
 import com.thinknote.app.ui.theme.ThinkNoteTheme
 import java.util.Date
 
 @Composable
 fun NoteItem(modifier: Modifier = Modifier, note: Note) {
+    val state = rememberRichTextState()
+    state.setHtml(note.description)
     Card(
         colors = CardDefaults.cardColors(containerColor = Color(note.color))
     ) {
-        Text( text = note.description, modifier = modifier.padding(8.dp))
+        RichText(
+            state = state, modifier = modifier.padding(8.dp),
+            textAlign = TextAlign.Justify,
+            fontSize = 16.sp
+        )
     }
 }
 
