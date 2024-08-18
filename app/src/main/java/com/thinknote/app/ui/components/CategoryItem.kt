@@ -16,7 +16,7 @@ fun CategoryItem(
     category: Category,
     onItemClick: (category: Category) -> Unit
 ) {
-    FilterChip(selected = false, modifier = modifier, onClick = {
+    FilterChip(selected = category.selected, modifier = modifier, onClick = {
         onItemClick(category)
     }, label = {
         Text(category.name)

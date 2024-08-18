@@ -36,18 +36,19 @@ fun HomeScreen(navigationController: NavController?, modifier: Modifier = Modifi
     LaunchedEffect(key1 = Unit) {
         homeViewModel.getCategories()
     }
+
     Scaffold(modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
                     Log.d(
                         "HomeScreen", AppNavigator.Routes.DETAILS.replace("{noteId}", "-1").replace(
-                            "{categoryId}", "1"
+                            "{categoryId}", homeViewModel.selectedCategory?.id.toString()
                         )
                     )
                     navigationController?.navigate(
                         AppNavigator.Routes.DETAILS.replace("{noteId}", "-1").replace(
-                            "{categoryId}", "1"
+                            "{categoryId}",  homeViewModel.selectedCategory?.id.toString()
                         )
                     )
                 }) {
@@ -74,7 +75,7 @@ fun HomeScreen(navigationController: NavController?, modifier: Modifier = Modifi
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 categories = categories.value, onCategoryClick = { category ->
-                    homeViewModel.selectedCategory = category
+                    homeViewModel.onSelectCategory(category)
                 }
             )
             NotesGrid(

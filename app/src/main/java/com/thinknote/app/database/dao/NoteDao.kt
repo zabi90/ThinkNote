@@ -1,6 +1,7 @@
 package com.thinknote.app.database.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -15,11 +16,14 @@ interface NoteDao {
     fun getNoteByCategory(categoryId: Int): Flow<List<Note>>
 
     @Query("SELECT * FROM NOTES WHERE id=:noteId")
-    suspend fun getNote(noteId: Int):Note?
+    suspend fun getNote(noteId: Int): Note?
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(note: Note)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(note: Note)
+
+    @Delete
+    suspend fun delete(note: Note)
 }

@@ -15,20 +15,26 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(private val appDatabase: AppDatabase) : ViewModel() {
 
-     var categoryId : Int = 1
-     var noteId : Int = -1
+    var categoryId: Int = 1
+    var noteId: Int = -1
 
     val noteState = mutableStateOf<Note?>(null)
 
-    fun getNote(){
+    fun getNote() {
         viewModelScope.launch {
-            appDatabase.noteDao().getNote(noteId).let {  note ->
+            appDatabase.noteDao().getNote(noteId).let { note ->
                 noteState.value = note
             }
         }
     }
 
-    fun updateNote(note: Note) {}
+    fun deleteNote() {
+        viewModelScope.launch {
+            noteState.value?.let { note ->
+                appDatabase.noteDao().delete(note)
+            }
+        }
+    }
 
     fun addNote(text: String) {
 
