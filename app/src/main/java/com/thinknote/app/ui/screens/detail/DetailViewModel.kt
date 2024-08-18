@@ -41,6 +41,7 @@ class DetailViewModel @Inject constructor(private val appDatabase: AppDatabase) 
         viewModelScope.launch {
             appDatabase.noteDao().add(
                 Note(
+                    id = noteId,
                     categoryId = categoryId,
                     description = text,
                     color = 0xFFD3E9FC,

@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,10 +32,12 @@ import com.thinknote.app.ui.theme.ThinkNoteTheme
 @Composable
 fun HomeScreen(navigationController: NavController?, modifier: Modifier = Modifier) {
     val homeViewModel: HomeViewModel = hiltViewModel()
-    val categories: State<List<Category>> = homeViewModel.categories
+    val categories: State<List<Category>> = homeViewModel.categories.collectAsState()
 
     LaunchedEffect(key1 = Unit) {
-        homeViewModel.getCategories()
+        homeViewModel.selectedCategory?.let {
+            homeViewModel.getNotes(it.id)
+        }
     }
 
     Scaffold(modifier = Modifier.fillMaxSize(),
@@ -48,7 +51,7 @@ fun HomeScreen(navigationController: NavController?, modifier: Modifier = Modifi
                     )
                     navigationController?.navigate(
                         AppNavigator.Routes.DETAILS.replace("{noteId}", "-1").replace(
-                            "{categoryId}",  homeViewModel.selectedCategory?.id.toString()
+                            "{categoryId}", homeViewModel.selectedCategory?.id.toString()
                         )
                     )
                 }) {
@@ -82,11 +85,12 @@ fun HomeScreen(navigationController: NavController?, modifier: Modifier = Modifi
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(start = 16.dp, end = 16.dp),
-                categoryWithNotes = homeViewModel.notes.value
+                categoryWithNotes = homeViewModel.notes.collectAsState().value
             ) { note ->
 
                 Log.d(
-                    "HomeScreen", AppNavigator.Routes.DETAILS.replace("{noteId}", note.id.toString()).replace(
+                    "HomeScreen",
+                    AppNavigator.Routes.DETAILS.replace("{noteId}", note.id.toString()).replace(
                         "{categoryId}", note.categoryId.toString()
                     )
                 )

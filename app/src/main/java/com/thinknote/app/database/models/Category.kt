@@ -11,8 +11,9 @@ data class Category(
     val id: Int,
     @ColumnInfo(name = "name")
     val name: String,
-
-){
     @Ignore
-    var selected : Boolean = false
+    var selected: Boolean = false
+) {
+    // Secondary constructor for Room
+    constructor(id: Int, name: String) : this(id, name, false)
 }
