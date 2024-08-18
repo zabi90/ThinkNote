@@ -14,10 +14,19 @@ import com.thinknote.app.database.models.Category
 import com.thinknote.app.ui.theme.ThinkNoteTheme
 
 @Composable
-fun CategoryList(modifier: Modifier = Modifier, categories: List<Category>) {
+fun CategoryList(
+    modifier: Modifier = Modifier,
+    categories: List<Category>,
+    onCategoryClick: (category: Category) -> Unit
+) {
     LazyRow(modifier = modifier) {
         items(categories) {
-            CategoryItem(modifier = Modifier.padding(horizontal = 4.dp), category = it)
+            CategoryItem(
+                modifier = Modifier.padding(horizontal = 4.dp),
+                category = it,
+                onItemClick = { category ->
+                    onCategoryClick(category)
+                })
         }
     }
 }
@@ -35,8 +44,7 @@ fun CategoryListPreview() {
                 Category(3, "Weather"),
                 Category(4, "Sports"),
                 Category(5, "Fashion"),
-
             )
-        )
+        ){}
     }
 }

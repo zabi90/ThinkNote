@@ -1,5 +1,6 @@
 package com.thinknote.app.ui.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,7 +40,16 @@ fun HomeScreen(navigationController: NavController?, modifier: Modifier = Modifi
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navigationController?.navigate(AppNavigator.Routes.DETAILS)
+                    Log.d(
+                        "HomeScreen", AppNavigator.Routes.DETAILS.replace("{noteId}", "-1").replace(
+                            "{categoryId}", "1"
+                        )
+                    )
+                    navigationController?.navigate(
+                        AppNavigator.Routes.DETAILS.replace("{noteId}", "-1").replace(
+                            "{categoryId}", "1"
+                        )
+                    )
                 }) {
                 Icon(Icons.Filled.Add, contentDescription = "add notes")
             }
@@ -63,14 +73,29 @@ fun HomeScreen(navigationController: NavController?, modifier: Modifier = Modifi
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                categories = categories.value
+                categories = categories.value, onCategoryClick = { category ->
+                    homeViewModel.selectedCategory = category
+                }
             )
             NotesGrid(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(start = 16.dp, end = 16.dp),
                 categoryWithNotes = homeViewModel.notes.value
-            )
+            ) { note ->
+
+                Log.d(
+                    "HomeScreen", AppNavigator.Routes.DETAILS.replace("{noteId}", note.id.toString()).replace(
+                        "{categoryId}", note.categoryId.toString()
+                    )
+                )
+
+                navigationController?.navigate(
+                    AppNavigator.Routes.DETAILS.replace("{noteId}", note.id.toString()).replace(
+                        "{categoryId}", note.categoryId.toString()
+                    )
+                )
+            }
         }
     }
 }

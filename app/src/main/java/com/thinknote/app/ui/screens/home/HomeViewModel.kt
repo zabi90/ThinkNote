@@ -15,6 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val appDatabase: AppDatabase) : ViewModel() {
 
+    var selectedCategory : Category? = null
+
     private var _categories : MutableState<List<Category>> = mutableStateOf(emptyList())
     val categories : State<List<Category>> get() = _categories
 

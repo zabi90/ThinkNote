@@ -1,5 +1,6 @@
 package com.thinknote.app.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,11 +22,14 @@ import com.thinknote.app.ui.theme.ThinkNoteTheme
 import java.util.Date
 
 @Composable
-fun NoteItem(modifier: Modifier = Modifier, note: Note) {
+fun NoteItem(modifier: Modifier = Modifier, note: Note, onItemClick: (note: Note) -> Unit) {
     val state = rememberRichTextState()
     state.setHtml(note.description)
     Card(
-        colors = CardDefaults.cardColors(containerColor = Color(note.color))
+        colors = CardDefaults.cardColors(containerColor = Color(note.color)),
+        modifier = Modifier.clickable {
+            onItemClick(note)
+        }
     ) {
         RichText(
             state = state, modifier = modifier.padding(8.dp),
@@ -45,6 +49,6 @@ fun NoteItemPreview() {
                 .padding(16.dp)
                 .height(300.dp),
             Note(1, 1, "text descr", 0xFFD9E8FC, Date(), Date())
-        )
+        ){}
     }
 }

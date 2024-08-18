@@ -17,9 +17,11 @@ import com.thinknote.app.database.models.Note
 import com.thinknote.app.ui.theme.ThinkNoteTheme
 
 @Composable
-fun NotesGrid(modifier: Modifier = Modifier, categoryWithNotes: List<Note>) {
-
-    // val itemsList = (0..20).toList()
+fun NotesGrid(
+    modifier: Modifier = Modifier,
+    categoryWithNotes: List<Note>,
+    onNoteItemClick: (note: Note) -> Unit
+) {
 
     val itemModifier = Modifier
         .fillMaxWidth()
@@ -33,7 +35,7 @@ fun NotesGrid(modifier: Modifier = Modifier, categoryWithNotes: List<Note>) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(categoryWithNotes) {
-            NoteItem(modifier = itemModifier, it)
+            NoteItem(modifier = itemModifier, it, onItemClick = onNoteItemClick)
         }
     }
 
@@ -47,7 +49,8 @@ fun NotesGridPreview() {
         NotesGrid(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp), listOf()
+                .padding(16.dp), listOf(),
+            {}
         )
     }
 }

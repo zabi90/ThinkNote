@@ -2,53 +2,75 @@ package com.thinknote.app.ui.screens.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
-import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
-import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorColors
-import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
+import com.mohamedrejeb.richeditor.ui.material3.OutlinedRichTextEditor
 import com.thinknote.app.R
 import com.thinknote.app.ui.theme.ThinkNoteTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(navController: NavController?, modifier: Modifier = Modifier) {
+fun DetailScreen(
+    navController: NavController?,
+    modifier: Modifier = Modifier,
+    noteID: Int? = -1,
+    categoryID: Int? =1
+) {
 
-    val detailViewModel:DetailViewModel = hiltViewModel()
+    val detailViewModel: DetailViewModel = hiltViewModel()
     val richTextState = rememberRichTextState()
+
+    LaunchedEffect(key1 = Unit) {
+
+        categoryID?.let {
+            detailViewModel.categoryId = categoryID
+        }
+
+        noteID?.let {
+            detailViewModel.noteId = noteID
+            detailViewModel.getNote()
+        }
+    }
+
+    LaunchedEffect(key1 = detailViewModel.noteState.value) {
+        detailViewModel.noteState.value?.let {
+            richTextState.setHtml(it.description)
+        }
+    }
+
     Scaffold(
         topBar = {
             Row(
@@ -70,27 +92,16 @@ fun DetailScreen(navController: NavController?, modifier: Modifier = Modifier) {
         bottomBar = {
             BottomAppBar(
                 actions = {
-                    IconButton(onClick = {
-                        richTextState.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
-                    }) {
-                        Icon(Icons.Filled.Check, contentDescription = "Localized description")
-                    }
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(
+                        onClick = {
+                            richTextState.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
+                        },
+                    ) {
+
                         Icon(
-                            Icons.Filled.Edit,
+                            Icons.Filled.Delete,
                             contentDescription = "Localized description",
-                        )
-                    }
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            Icons.Filled.Refresh,
-                            contentDescription = "Localized description",
-                        )
-                    }
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            Icons.Filled.Favorite,
-                            contentDescription = "Localized description",
+                            modifier = Modifier,
                         )
                     }
                 },
@@ -111,14 +122,123 @@ fun DetailScreen(navController: NavController?, modifier: Modifier = Modifier) {
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Column(modifier = modifier.padding(innerPadding)) {
-            RichTextEditor(
-                modifier = Modifier.fillMaxSize(1f),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .background(color = Color.White)
+            ) {
+                IconButton(
+                    onClick = {
+                        richTextState.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
+                    },
+                ) {
+
+                    // Get the current span style.
+                    val currentSpanStyle = richTextState.currentSpanStyle
+                    val isBold = currentSpanStyle.fontWeight == FontWeight.Bold
+
+                    Icon(
+                        painterResource(id = R.drawable.ic_bold),
+                        contentDescription = "Localized description",
+                        modifier = Modifier,
+                        tint = if (isBold) Color.Black else Color.LightGray
+                    )
+                }
+                IconButton(onClick = {
+                    richTextState.toggleSpanStyle(
+                        SpanStyle(
+                            fontStyle = FontStyle.Italic
+                        )
+                    )
+                }) {
+
+                    val isItalic = richTextState.currentSpanStyle.fontStyle == FontStyle.Italic
+
+                    Icon(
+                        painterResource(id = R.drawable.ic_italic),
+                        contentDescription = "Localized description",
+                        modifier = Modifier,
+                        tint = if (isItalic) Color.Black else Color.LightGray
+                    )
+                }
+                IconButton(onClick = {
+                    richTextState.toggleSpanStyle(
+                        SpanStyle(
+                            textDecoration = TextDecoration.Underline
+                        )
+                    )
+                }) {
+                    val isUnderLine =
+                        richTextState.currentSpanStyle.textDecoration?.contains(TextDecoration.Underline) == true
+                    Icon(
+                        painterResource(id = R.drawable.ic_underline),
+                        contentDescription = "Localized description",
+                        modifier = Modifier,
+                        tint = if (isUnderLine) Color.Black else Color.LightGray
+                    )
+                }
+
+                IconButton(onClick = {
+                    richTextState.addParagraphStyle(
+                        ParagraphStyle(
+                            textAlign = TextAlign.Left
+                        )
+                    )
+                }) {
+                    val isLeftAlign =
+                        richTextState.currentParagraphStyle.textAlign == TextAlign.Left
+                    Icon(
+                        painterResource(id = R.drawable.ic_align_left),
+                        contentDescription = "Localized description",
+                        modifier = Modifier,
+                        tint = if (isLeftAlign) Color.Black else Color.LightGray
+                    )
+                }
+
+                IconButton(onClick = {
+                    richTextState.addParagraphStyle(
+                        ParagraphStyle(
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }) {
+                    val isCenterAlign =
+                        richTextState.currentParagraphStyle.textAlign == TextAlign.Center
+                    Icon(
+                        painterResource(id = R.drawable.ic_alight),
+                        contentDescription = "Localized description",
+                        modifier = Modifier,
+                        tint = if (isCenterAlign) Color.Black else Color.LightGray
+                    )
+                }
+
+
+                IconButton(onClick = {
+                    richTextState.addParagraphStyle(
+                        ParagraphStyle(
+                            textAlign = TextAlign.Right
+                        )
+                    )
+                }) {
+                    val isRightAlign =
+                        richTextState.currentParagraphStyle.textAlign == TextAlign.Right
+                    Icon(
+                        painterResource(id = R.drawable.ic_align_right),
+                        contentDescription = "Localized description",
+                        modifier = Modifier,
+                        tint = if (isRightAlign) Color.Black else Color.LightGray
+                    )
+                }
+            }
+            OutlinedRichTextEditor(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .background(Color.White, shape = RoundedCornerShape(8.dp)),
                 state = richTextState,
             )
         }
     }
-
-
 }
 
 @Preview(showBackground = true)

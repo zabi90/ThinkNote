@@ -11,8 +11,14 @@ import com.thinknote.app.database.models.Category
 import com.thinknote.app.ui.theme.ThinkNoteTheme
 
 @Composable
-fun CategoryItem(modifier: Modifier = Modifier, category: Category) {
-    FilterChip(selected = false, modifier = modifier, onClick = { /*TODO*/ }, label = {
+fun CategoryItem(
+    modifier: Modifier = Modifier,
+    category: Category,
+    onItemClick: (category: Category) -> Unit
+) {
+    FilterChip(selected = false, modifier = modifier, onClick = {
+        onItemClick(category)
+    }, label = {
         Text(category.name)
     })
 }
@@ -25,6 +31,8 @@ fun CategoryItemPreview() {
             modifier = Modifier
                 .wrapContentSize(),
             category = Category(1, "Health")
-        )
+        ){
+
+        }
     }
 }
