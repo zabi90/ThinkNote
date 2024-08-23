@@ -134,7 +134,12 @@ fun DetailScreen(
                 floatingActionButton = {
                     FloatingActionButton(
                         onClick = {
-                            detailViewModel.addNote(richTextState.toHtml())
+
+                            if(detailViewModel.noteState.value != null){
+                                detailViewModel.updateNote(richTextState.toHtml())
+                            }else{
+                                detailViewModel.addNote(richTextState.toHtml())
+                            }
                             navController?.navigateUp()
                         },
                         containerColor = BottomAppBarDefaults.bottomAppBarFabColor,

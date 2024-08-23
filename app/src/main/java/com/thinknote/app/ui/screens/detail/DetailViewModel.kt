@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.thinknote.app.database.AppDatabase
 import com.thinknote.app.database.models.Category
 import com.thinknote.app.database.models.Note
+import com.thinknote.app.utilities.ColorCodes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -22,8 +23,12 @@ class DetailViewModel @Inject constructor(private val appDatabase: AppDatabase) 
 
     fun getNote() {
         viewModelScope.launch {
-            appDatabase.noteDao().getNote(noteId).let { note ->
-                noteState.value = note
+            if (noteId == -1) {
+                noteState.value = null
+            } else {
+                appDatabase.noteDao().getNote(noteId).let { note ->
+                    noteState.value = note
+                }
             }
         }
     }
@@ -36,15 +41,21 @@ class DetailViewModel @Inject constructor(private val appDatabase: AppDatabase) 
         }
     }
 
+    fun updateNote(text: String){
+        val note = noteState.value?.copy(description = text, updatedAt = Date())
+        note?.let {
+            viewModelScope.launch {
+                appDatabase.noteDao().update(note)
+            }
+        }
+    }
     fun addNote(text: String) {
-
         viewModelScope.launch {
             appDatabase.noteDao().add(
                 Note(
-                    id = noteId,
                     categoryId = categoryId,
                     description = text,
-                    color = 0xFFD3E9FC,
+                    color = ColorCodes.generateColor(),
                     createdAt = Date(),
                     updatedAt = Date()
                 )
