@@ -2,14 +2,11 @@ package com.thinknote.app.ui.screens.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -18,18 +15,20 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
@@ -51,7 +50,9 @@ import com.thinknote.app.R
 import com.thinknote.app.ui.components.ConfirmationAlertDialog
 import com.thinknote.app.ui.theme.ThinkNoteTheme
 import com.thinknote.app.ui.theme.primaryColor
-import com.thinknote.app.ui.theme.secondaryColor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,6 +65,8 @@ fun DetailScreen(
 
     val detailViewModel: DetailViewModel = hiltViewModel()
     val richTextState = rememberRichTextState()
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     val deleteAlertDialog = remember { mutableStateOf(false) }
 
     when {
@@ -74,7 +77,10 @@ fun DetailScreen(
                 onConfirmation = {
                     deleteAlertDialog.value = false
                     detailViewModel.deleteNote()
-                    navController?.navigateUp()
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Note deleted successfully.")
+                        navController?.navigateUp()
+                    }
                 },
                 dialogTitle = "Delete",
                 dialogText = "You to want to delete this note?",
@@ -104,7 +110,9 @@ fun DetailScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         bottomBar = {
             BottomAppBar(
                 containerColor = Color.White,
@@ -127,7 +135,15 @@ fun DetailScreen(
                 floatingActionButton = {
                     FloatingActionButton(
                         onClick = {
-
+                            if (richTextState.toHtml() == "<br>" || richTextState.toString()
+                                    .isBlank() || richTextState.toString()
+                                    .isEmpty()
+                            ) {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Please enter some think in note")
+                                }
+                                return@FloatingActionButton
+                            }
                             if (detailViewModel.noteState.value != null) {
                                 detailViewModel.updateNote(richTextState.toHtml())
                             } else {
