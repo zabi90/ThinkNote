@@ -15,13 +15,13 @@ Add, delete and update notes. Arrange them in category wise.
 
 
 
-<img alt="Home" src="https://github.com/zabi90/ThinkNote/blob/master/screenshots/home.png" width="45%" />
+<img alt="Home" src="https://github.com/zabi90/ThinkNote/blob/master/screenshots/home.png" width="25%" />
 
 
-<img alt="Home List" src="https://github.com/zabi90/ThinkNote/blob/master/screenshots/home_list.png" width="45%" />
+<img alt="Home List" src="https://github.com/zabi90/ThinkNote/blob/master/screenshots/home_list.png" width="25%" />
 
 
-<img alt="Detail" src="https://github.com/zabi90/ThinkNote/blob/master/screenshots/detail.png" width="45%" />
+<img alt="Detail" src="https://github.com/zabi90/ThinkNote/blob/master/screenshots/detail.png" width="25%" />
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
