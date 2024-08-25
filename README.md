@@ -1,2 +1,2 @@
 # ThinkNote
-Notes taking app
+My first complet app in Jetpack compose ui.
