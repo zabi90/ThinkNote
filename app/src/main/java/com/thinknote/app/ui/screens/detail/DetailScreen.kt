@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -152,7 +153,8 @@ fun DetailScreen(
                             navController?.navigateUp()
                         },
                         containerColor = primaryColor,
-                        elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
+                        elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
+                        shape = CircleShape
                     ) {
                         Icon(Icons.Filled.Done, "Localized description")
                     }
