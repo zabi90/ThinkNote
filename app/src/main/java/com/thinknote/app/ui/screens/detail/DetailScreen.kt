@@ -3,6 +3,7 @@ package com.thinknote.app.ui.screens.detail
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,20 +16,25 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -38,13 +44,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.OutlinedRichTextEditor
 import com.thinknote.app.R
 import com.thinknote.app.ui.components.ConfirmationAlertDialog
 import com.thinknote.app.ui.theme.ThinkNoteTheme
+import com.thinknote.app.ui.theme.primaryColor
+import com.thinknote.app.ui.theme.secondaryColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,25 +103,11 @@ fun DetailScreen(
     }
 
     Scaffold(
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
+        modifier = Modifier.fillMaxSize(),
 
-                Image(
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .padding(vertical = 16.dp)
-                        .weight(1f),
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "Think",
-                )
-            }
-        },
         bottomBar = {
             BottomAppBar(
+                containerColor = Color.White,
                 actions = {
                     detailViewModel.noteState.value?.let {
                         IconButton(
@@ -135,14 +128,14 @@ fun DetailScreen(
                     FloatingActionButton(
                         onClick = {
 
-                            if(detailViewModel.noteState.value != null){
+                            if (detailViewModel.noteState.value != null) {
                                 detailViewModel.updateNote(richTextState.toHtml())
-                            }else{
+                            } else {
                                 detailViewModel.addNote(richTextState.toHtml())
                             }
                             navController?.navigateUp()
                         },
-                        containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
+                        containerColor = primaryColor,
                         elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
                     ) {
                         Icon(Icons.Filled.Done, "Localized description")
@@ -150,115 +143,133 @@ fun DetailScreen(
                 }
             )
         },
-        modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        Column(modifier = modifier.padding(innerPadding)) {
-            Row(
+        Column(
+            modifier = modifier
+                .padding(innerPadding)
+                .clipToBounds()
+        ) {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = stringResource(R.string.think)
+            )
+            Card(
                 modifier = Modifier
                     .fillMaxWidth(1f)
-                    .background(color = Color.White)
+                    .background(color = Color.White),
+                elevation = CardDefaults.cardElevation(8.dp),
+                shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
             ) {
-                IconButton(
-                    onClick = {
-                        richTextState.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
-                    },
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(1f)
+                        .background(color = Color.White)
                 ) {
+                    IconButton(
+                        onClick = {
+                            richTextState.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
+                        },
+                    ) {
 
-                    // Get the current span style.
-                    val currentSpanStyle = richTextState.currentSpanStyle
-                    val isBold = currentSpanStyle.fontWeight == FontWeight.Bold
+                        // Get the current span style.
+                        val currentSpanStyle = richTextState.currentSpanStyle
+                        val isBold = currentSpanStyle.fontWeight == FontWeight.Bold
 
-                    Icon(
-                        painterResource(id = R.drawable.ic_bold),
-                        contentDescription = "Localized description",
-                        modifier = Modifier,
-                        tint = if (isBold) Color.Black else Color.LightGray
-                    )
-                }
-                IconButton(onClick = {
-                    richTextState.toggleSpanStyle(
-                        SpanStyle(
-                            fontStyle = FontStyle.Italic
+                        Icon(
+                            painterResource(id = R.drawable.ic_bold),
+                            contentDescription = "Localized description",
+                            modifier = Modifier,
+                            tint = if (isBold) Color.Black else Color.LightGray
                         )
-                    )
-                }) {
-
-                    val isItalic = richTextState.currentSpanStyle.fontStyle == FontStyle.Italic
-
-                    Icon(
-                        painterResource(id = R.drawable.ic_italic),
-                        contentDescription = "Localized description",
-                        modifier = Modifier,
-                        tint = if (isItalic) Color.Black else Color.LightGray
-                    )
-                }
-                IconButton(onClick = {
-                    richTextState.toggleSpanStyle(
-                        SpanStyle(
-                            textDecoration = TextDecoration.Underline
+                    }
+                    IconButton(onClick = {
+                        richTextState.toggleSpanStyle(
+                            SpanStyle(
+                                fontStyle = FontStyle.Italic
+                            )
                         )
-                    )
-                }) {
-                    val isUnderLine =
-                        richTextState.currentSpanStyle.textDecoration?.contains(TextDecoration.Underline) == true
-                    Icon(
-                        painterResource(id = R.drawable.ic_underline),
-                        contentDescription = "Localized description",
-                        modifier = Modifier,
-                        tint = if (isUnderLine) Color.Black else Color.LightGray
-                    )
-                }
+                    }) {
 
-                IconButton(onClick = {
-                    richTextState.addParagraphStyle(
-                        ParagraphStyle(
-                            textAlign = TextAlign.Left
+                        val isItalic = richTextState.currentSpanStyle.fontStyle == FontStyle.Italic
+
+                        Icon(
+                            painterResource(id = R.drawable.ic_italic),
+                            contentDescription = "Localized description",
+                            modifier = Modifier,
+                            tint = if (isItalic) Color.Black else Color.LightGray
                         )
-                    )
-                }) {
-                    val isLeftAlign =
-                        richTextState.currentParagraphStyle.textAlign == TextAlign.Left
-                    Icon(
-                        painterResource(id = R.drawable.ic_align_left),
-                        contentDescription = "Localized description",
-                        modifier = Modifier,
-                        tint = if (isLeftAlign) Color.Black else Color.LightGray
-                    )
-                }
-
-                IconButton(onClick = {
-                    richTextState.addParagraphStyle(
-                        ParagraphStyle(
-                            textAlign = TextAlign.Center
+                    }
+                    IconButton(onClick = {
+                        richTextState.toggleSpanStyle(
+                            SpanStyle(
+                                textDecoration = TextDecoration.Underline
+                            )
                         )
-                    )
-                }) {
-                    val isCenterAlign =
-                        richTextState.currentParagraphStyle.textAlign == TextAlign.Center
-                    Icon(
-                        painterResource(id = R.drawable.ic_alight),
-                        contentDescription = "Localized description",
-                        modifier = Modifier,
-                        tint = if (isCenterAlign) Color.Black else Color.LightGray
-                    )
-                }
-
-
-                IconButton(onClick = {
-                    richTextState.addParagraphStyle(
-                        ParagraphStyle(
-                            textAlign = TextAlign.Right
+                    }) {
+                        val isUnderLine =
+                            richTextState.currentSpanStyle.textDecoration?.contains(TextDecoration.Underline) == true
+                        Icon(
+                            painterResource(id = R.drawable.ic_underline),
+                            contentDescription = "Localized description",
+                            modifier = Modifier,
+                            tint = if (isUnderLine) Color.Black else Color.LightGray
                         )
-                    )
-                }) {
-                    val isRightAlign =
-                        richTextState.currentParagraphStyle.textAlign == TextAlign.Right
-                    Icon(
-                        painterResource(id = R.drawable.ic_align_right),
-                        contentDescription = "Localized description",
-                        modifier = Modifier,
-                        tint = if (isRightAlign) Color.Black else Color.LightGray
-                    )
+                    }
+
+                    IconButton(onClick = {
+                        richTextState.addParagraphStyle(
+                            ParagraphStyle(
+                                textAlign = TextAlign.Left
+                            )
+                        )
+                    }) {
+                        val isLeftAlign =
+                            richTextState.currentParagraphStyle.textAlign == TextAlign.Left
+                        Icon(
+                            painterResource(id = R.drawable.ic_align_left),
+                            contentDescription = "Localized description",
+                            modifier = Modifier,
+                            tint = if (isLeftAlign) Color.Black else Color.LightGray
+                        )
+                    }
+
+                    IconButton(onClick = {
+                        richTextState.addParagraphStyle(
+                            ParagraphStyle(
+                                textAlign = TextAlign.Center
+                            )
+                        )
+                    }) {
+                        val isCenterAlign =
+                            richTextState.currentParagraphStyle.textAlign == TextAlign.Center
+                        Icon(
+                            painterResource(id = R.drawable.ic_alight),
+                            contentDescription = "Localized description",
+                            modifier = Modifier,
+                            tint = if (isCenterAlign) Color.Black else Color.LightGray
+                        )
+                    }
+
+
+                    IconButton(onClick = {
+                        richTextState.addParagraphStyle(
+                            ParagraphStyle(
+                                textAlign = TextAlign.Right
+                            )
+                        )
+                    }) {
+                        val isRightAlign =
+                            richTextState.currentParagraphStyle.textAlign == TextAlign.Right
+                        Icon(
+                            painterResource(id = R.drawable.ic_align_right),
+                            contentDescription = "Localized description",
+                            modifier = Modifier,
+                            tint = if (isRightAlign) Color.Black else Color.LightGray
+                        )
+                    }
                 }
             }
             OutlinedRichTextEditor(
@@ -267,6 +278,9 @@ fun DetailScreen(
                     .weight(1f)
                     .background(Color.White, shape = RoundedCornerShape(8.dp)),
                 state = richTextState,
+                placeholder = {
+                    Text(text = "Title \n type here..", color = Color.LightGray)
+                }
             )
         }
     }

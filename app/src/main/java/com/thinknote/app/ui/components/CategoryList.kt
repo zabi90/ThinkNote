@@ -1,6 +1,5 @@
 package com.thinknote.app.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -12,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.thinknote.app.database.models.Category
 import com.thinknote.app.ui.theme.ThinkNoteTheme
 
+
 @Composable
 fun CategoryList(
     modifier: Modifier = Modifier,
@@ -20,8 +20,6 @@ fun CategoryList(
 ) {
 
     LazyRow(modifier = modifier) {
-        Log.d("CategoryList", "composable")
-
 
         items(categories) {
             CategoryItem(
@@ -31,10 +29,7 @@ fun CategoryList(
                     onCategoryClick(category)
                 })
         }
-
-
     }
-
 }
 
 @Preview(showBackground = true)
@@ -45,7 +40,7 @@ fun CategoryListPreview() {
             modifier = Modifier
                 .fillMaxSize(),
             categories = listOf(
-                Category(1, "Health"),
+                Category(1, "Health", selected = true),
                 Category(2, "Fashion"),
                 Category(3, "Weather"),
                 Category(4, "Sports"),

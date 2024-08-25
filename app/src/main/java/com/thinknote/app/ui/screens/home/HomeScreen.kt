@@ -1,6 +1,5 @@
 package com.thinknote.app.ui.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +15,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,39 +45,41 @@ fun HomeScreen(navigationController: NavController?, modifier: Modifier = Modifi
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    Log.d(
-                        "HomeScreen", AppNavigator.Routes.DETAILS.replace("{noteId}", "-1").replace(
-                            "{categoryId}", homeViewModel.selectedCategory?.id.toString()
-                        )
-                    )
                     navigationController?.navigate(
                         AppNavigator.Routes.DETAILS.replace("{noteId}", "-1").replace(
                             "{categoryId}", homeViewModel.selectedCategory?.id.toString()
                         )
                     )
-                }) {
+                },
+                ) {
                 Icon(Icons.Filled.Add, contentDescription = "add notes")
             }
         }) { innerPadding ->
 
 
-        Column(modifier = modifier.padding(innerPadding)) {
+        Column(
+            modifier = modifier
+                .padding(innerPadding)
+                .clipToBounds()
+        ) {
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Think"
+                contentDescription = stringResource(R.string.think)
             )
 
             SearchView(modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp), onSearchValueChange = {
             })
+
             CategoryList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
+
                 categories = categories.value, onCategoryClick = { category ->
                     homeViewModel.onSelectCategory(category)
                 }
@@ -84,16 +87,9 @@ fun HomeScreen(navigationController: NavController?, modifier: Modifier = Modifi
             NotesGrid(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 16.dp, end = 16.dp),
+                    .padding(horizontal = 16.dp),
                 categoryWithNotes = homeViewModel.notes.collectAsState().value
             ) { note ->
-
-                Log.d(
-                    "HomeScreen",
-                    AppNavigator.Routes.DETAILS.replace("{noteId}", note.id.toString()).replace(
-                        "{categoryId}", note.categoryId.toString()
-                    )
-                )
 
                 navigationController?.navigate(
                     AppNavigator.Routes.DETAILS.replace("{noteId}", note.id.toString()).replace(
