@@ -14,14 +14,14 @@ Add, delete and update notes. Arrange them in category wise.
 ## Screenshots
 
 
-![Home](https://github.com/zabi90/ThinkNote/blob/master/screenshots/home.png)
 
-![Note](https://github.com/zabi90/ThinkNote/blob/master/screenshots/home_list.png)
-
-![Detail](https://github.com/zabi90/ThinkNote/blob/master/screenshots/detail.png)
+<img alt="Home" src="https://github.com/zabi90/ThinkNote/blob/master/screenshots/home.png" width="45%" />
 
 
+<img alt="Home List" src="https://github.com/zabi90/ThinkNote/blob/master/screenshots/home_list.png" width="45%" />
 
+
+<img alt="Detail" src="https://github.com/zabi90/ThinkNote/blob/master/screenshots/detail.png" width="45%" />
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
@@ -30,3 +30,4 @@ Add, delete and update notes. Arrange them in category wise.
 ## 🛠 Skills
 Android, Kotlin, Jetpack compose...
 
+s
